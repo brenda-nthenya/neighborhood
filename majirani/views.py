@@ -54,19 +54,23 @@ def signup(request):
 
 @login_required(login_url='login')
 def new_business(request):
+    current_user = request.user
+    profile = request.user.profile
     
-	if request.method == 'POST':
-		form = NewBusinessForm(request.POST)
-		if form.is_valid():
-			business = form.save(commit = False)
-			business.user = request.user
-			business.save()
-			messages.success(request, 'You Have succesfully created a business')
-			return redirect('business')
+    if request.method == 'POST':
+        form = NewBusinessForm(request.POST)
+        if form.is_valid():
+            business = form.save(commit = False)
+            business.Admin = current_user
+            business.admin_profile = profile
+            business.save()
+            messages.success(request, 'You Have succesfully created a business')
+            return redirect('index')
+    else:
+        form = NewBusinessForm()
+        
+    return render(request,'hood/new_business.html',locals())
 
-	else:
-		form = NewBusinessForm()
-		return render(request,'hood/new_business.html',locals())
 
 @login_required(login_url='login')
 def search_results(request):
@@ -87,3 +91,4 @@ def search_results(request):
         message = "You haven't searched for any term"
 
         return render(request, 'hood/search_hood.html',{"message":message})
+
