@@ -53,6 +53,22 @@ def signup(request):
     return render(request, 'django_registration/registration_form', {'form': form})
 
 @login_required(login_url='login')
+def new_business(request):
+    
+	if request.method == 'POST':
+		form = NewBusinessForm(request.POST)
+		if form.is_valid():
+			business = form.save(commit = False)
+			business.user = request.user
+			business.save()
+			messages.success(request, 'You Have succesfully created a business')
+			return redirect('business')
+
+	else:
+		form = NewBusinessForm()
+		return render(request,'hood/new_business.html',locals())
+
+@login_required(login_url='login')
 def search_results(request):
     
     if 'Business' in request.GET and request.GET["Business"]:
