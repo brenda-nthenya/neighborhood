@@ -106,7 +106,7 @@ class Business(models.Model):
         verbose_name_plural = 'Business'
 
 
-class BussinessPosts(models.Model):
+class Posts(models.Model):
     post = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)    
     neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE)
