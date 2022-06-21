@@ -28,3 +28,8 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         exclude = ['user']
+
+class NewPostForm(forms.ModelForm):
+    class Meta:
+        model = Posts
+        exclude = ['Author', 'pub_date', 'author_profile', 'neighborhood']
