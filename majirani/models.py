@@ -103,6 +103,11 @@ class Business(models.Model):
     def __str__(self):
         return self.name
     
+    @classmethod
+    def get_by_hood(cls, neighborhoods):
+        business = cls.objects.filter(neighborhood__name__icontains=neighborhoods)
+        return business
+
     class Meta:
         ordering = ['-pub_date']
         verbose_name = 'My Business'
