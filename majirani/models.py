@@ -80,3 +80,27 @@ class Business(models.Model):
     admin_profile = models.ForeignKey(Profile,on_delete=models.CASCADE, blank=True, default='1')
     address = models.TextField()
     neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE, blank=True, default='1')
+
+    def save_business(self):
+        self.save()
+    
+    def delete_business(self):
+        self.delete()
+
+    @classmethod
+    def get_allbusiness(cls):
+        business = cls.objects.all()
+        return business
+    
+    @classmethod
+    def search_business(cls, search_term):
+        business = cls.objects.filter(name__icontains=search_term)
+        return business
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'My Business'
+        verbose_name_plural = 'Business'
