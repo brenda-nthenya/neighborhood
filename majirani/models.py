@@ -12,6 +12,31 @@ class Neighborhood(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
     Admin = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
 
+    def __str__(self):
+        return self.name
+
+    def save_neighborhood(self):
+        self.save()
+    
+    def delete_neighborhood(self):
+        self.delete()
+        
+    @classmethod
+    def get_hoods(cls):
+        hood = cls.objects.all()
+        return hood
+    
+    @classmethod
+    def search_hoods(cls, search_term):
+        hood = cls.objects.filter(name__icontains=search_term)
+        return hood
+    
+    @classmethod
+    def get_by_admin(cls, Admin):
+        hood = cls.objects.filter(Admin=Admin)
+        return hood
+    
+    
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
