@@ -92,3 +92,18 @@ def search_results(request):
 
         return render(request, 'hood/search_hood.html',{"message":message})
 
+def new_post(request):
+    
+    if request.method == 'POST':
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.Author = request.user
+            post.author_profile = request.user.profile
+            post.neighborhood = request.user.profile.neighborhood
+            post.save()
+        return redirect('index')
+
+    else:
+        form = NewPostForm()
+    return render(request, 'hood/new-post.html', {"form": form})
