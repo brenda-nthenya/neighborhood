@@ -14,3 +14,12 @@ class SignupForm(UserCreationForm):
         model = User
         fields=['username','first_name','last_name','email','password1','password2']
 
+class NewBusinessForm(forms.ModelForm):
+    class Meta:
+        model = Business
+        exclude = ['Admin', 'pub_date', 'admin_profile']
+
+class NewNeighborhoodForm(forms.ModelForm):
+    class Meta:
+        model = Neighborhood
+        exclude = ['Admin', 'pub_date', 'admin_profile']
