@@ -36,7 +36,10 @@ class Neighborhood(models.Model):
         hood = cls.objects.filter(Admin=Admin)
         return hood
     
-    
+    class Meta:
+        ordering = ['pk']
+        verbose_name = 'My Neighborhood'
+        verbose_name_plural = 'Neighborhoods'
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
