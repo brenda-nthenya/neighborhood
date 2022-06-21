@@ -92,6 +92,8 @@ def search_results(request):
 
         return render(request, 'hood/search_hood.html',{"message":message})
 
+
+@login_required(login_url='login')
 def new_post(request):
     
     if request.method == 'POST':
@@ -106,4 +108,35 @@ def new_post(request):
 
     else:
         form = NewPostForm()
-    return render(request, 'hood/new-post.html', {"form": form})
+    return render(request, 'hood/new_post.html', {"form": form})
+
+@login_required(login_url='login')
+def edit_profile(request, profile_id):
+    current_user = User.objects.get(pk=profile_id)
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        hood_form = NewNeighborhoodForm(request.post)
+
+        if profile_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.save()
+            return redirect('profile')
+            
+        if hood_form.is_valid():
+            neighborhood = hood_form.save(commit=False)
+            neighborhood.Admin = current_user
+            neighborhood.admin_profile = profile
+            neighborhood.save()
+            return redirect('profile')
+
+    else:
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+        hood_form = NewNeighborhoodForm(instance=request.user)
+    
+    context= {
+        "profile_form": profile_form,
+        "hood_form":hood_form
+    }
+    return render(request, 'profile/update_profile.html', context )
