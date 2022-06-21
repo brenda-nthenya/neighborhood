@@ -11,7 +11,32 @@ from django.contrib.auth import login, authenticate
 # Create your views here.
 @login_required(login_url='login')
 def index(request):
-    pass
+    all_neighborhoods = Neighborhood.get_hoods()
+    
+    if 'neighborhood' in request.GET and request.GET["neighborhood"]:
+        neighborhoods = request.GET.get("neighborhood")
+        searched_hoods = Business.get_by_hood(neighborhoods)
+        all_posts = Posts.get_by_neighborhood(neighborhoods)
+        message = f"{neighborhoods}"
+        all_neighborhoods = Neighborhood.get_hoods() 
+
+        context = {
+            "message":message,
+            "location": searched_hoods,                                 
+            "all_neighborhoods":all_neighborhoods,
+            "all_posts":all_posts
+        }       
+        
+        return render(request, 'index.html', context)
+    
+    else:
+        message = "No Neighborhood Found!" 
+
+    context = {
+        "all_neighborhoods":all_neighborhoods
+    }  
+
+    return render(request, 'index.html', context)
 
 def signup(request):
     if request.method == 'POST':
