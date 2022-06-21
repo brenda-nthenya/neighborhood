@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-import datetime as dt
+from PIL import Image
 # Create your models here.
 
 class Neighborhood(models.Model):
@@ -44,7 +44,6 @@ class Profile(models.Model):
     photo = models.ImageField(upload_to = 'profile_pics/', blank=True, default='profile_pics/default.jpg')
     neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE, blank=True, default='1')
 
-
     @receiver(post_save,sender=User)
     def create_profile(sender, instance,created,**kwargs):
         if created:
@@ -53,3 +52,12 @@ class Profile(models.Model):
     @receiver(post_save,sender=User)
     def save_profile(sender, instance,**kwargs):
         instance.profile.save()
+
+    def save_profile(self):
+        self.save()
+        
+        img = Image.open(self.photo.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.photo.path)
