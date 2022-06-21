@@ -18,3 +18,13 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     photo = models.ImageField(upload_to = 'profile_pics/', blank=True, default='profile_pics/default.jpg')
     neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE, blank=True, default='1')
+
+
+    @receiver(post_save,sender=User)
+    def create_profile(sender, instance,created,**kwargs):
+        if created:
+            Profile.objects.create(user=instance)
+
+    @receiver(post_save,sender=User)
+    def save_profile(sender, instance,**kwargs):
+        instance.profile.save()
