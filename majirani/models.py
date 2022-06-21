@@ -71,3 +71,12 @@ class Profile(models.Model):
     class Meta:
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
+
+class Business(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField(null=True, blank=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    Admin = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    admin_profile = models.ForeignKey(Profile,on_delete=models.CASCADE, blank=True, default='1')
+    address = models.TextField()
+    neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE, blank=True, default='1')
