@@ -52,4 +52,22 @@ def signup(request):
         form = SignupForm()
     return render(request, 'django_registration/registration_form', {'form': form})
 
+@login_required(login_url='login')
+def search_results(request):
+    
+    if 'Business' in request.GET and request.GET["Business"]:
+        search_term = request.GET.get("Business")
+        searched_Business = Business.search_by_title(search_term)
+        message = f"{search_term}"
 
+        context = {
+            "message":message,
+            "Business": searched_Business
+        }
+
+        return render(request, 'all-hood/search.html',context)
+
+    else:
+        message = "You haven't searched for any term"
+
+        return render(request, 'hood/search_hood.html',{"message":message})
