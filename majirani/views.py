@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.contrib import messages
+from .email import send_welcome_email
 from django.contrib.auth import login, authenticate
 # Create your views here.
 @login_required(login_url='login')
@@ -25,7 +26,14 @@ def register(request):
             user=form.save()
             profile=procForm.save(commit=False)
             profile.user=user
-            profile.save()
+            profile.save() 
+
+            name = form.cleaned_data['your_name']
+            email = form.cleaned_data['email']
+
+            recipient = NewsLetterRecipients(name = name,email =email)
+            recipient.save()
+            send_welcome_email(name,email)
         return redirect('login')
     else:
         form= SignupForm()
