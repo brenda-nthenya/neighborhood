@@ -1,0 +1,37 @@
+{%extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="px-4 py-5 my-5 text-center">
+  <a href="{% url 'create_hood' %}" class="btn btn-sm btn-info mb-2"> New Hood</a>
+  <div class="row">
+    {% for hood in all_hoods %}
+    <div class="col-md-4">
+      <img class="d-block mx-auto mb-4 rounded-circle" src="{%static 'photos/buildings.png'%}" alt="" width="140" height="140">
+      <h1 class="display-5 fw-bold">{{ hood.name}}</h1>
+      <h4>{{hood.location}}</h4>
+      <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">{{hood.description}}</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          {% if request.user.profile.neighbourhood == hood %}
+          <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Move Out</button>
+          {% else %}
+          <button type="button" class="btn btn-outline-secondary btn-lg px-4">Move In</button>
+          {% endif %}
+        </div>
+        <br>
+    </div>
+    </div>
+    {% endfor %}
+  </div>  
+   
+  
+  
+</div>
+{% endif %}
+<!-- end of landing layout -->
+
+{% endblock %}
+
+
