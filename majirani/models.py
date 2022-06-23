@@ -16,7 +16,7 @@ class Neighborhood(models.Model):
     admin = models.ForeignKey("Profile", on_delete=models.CASCADE, blank=True, related_name="hood")
 
     def __str__(self):
-        return self.name
+        return f'{self.name} hood'
 
     def save_neighborhood(self):
         self.save()
@@ -31,7 +31,7 @@ class Neighborhood(models.Model):
     
     @classmethod
     def search_hoods(cls, neighbourhood_id):
-        hood = cls.objects.filter(name__icontains=neighbourhood_id)
+        hood = cls.objects.filter(id=neighbourhood_id)
         return hood
     
     @classmethod
@@ -39,11 +39,6 @@ class Neighborhood(models.Model):
         hood = cls.objects.filter(Admin=Admin)
         return hood
     
-    class Meta:
-        ordering = ['pk']
-        verbose_name = 'My Neighborhood'
-        verbose_name_plural = 'Neighborhoods'
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     name  = models.CharField(max_length=60)
@@ -65,11 +60,6 @@ class Profile(models.Model):
     def save_profile(self):
         self.save()
         
-        img = Image.open(self.photo.path)
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.photo.path)
 
     def delete_profile(self):
         self.delete()
@@ -80,7 +70,7 @@ class Profile(models.Model):
 
 
     def __str__(self):
-        return f"{self.user}, {self.bio}, {self.photo}"
+        return f"{self.user}, {self.bio}, {self.profile_picture}"
     
     class Meta:
         verbose_name = 'Profile'
@@ -105,8 +95,8 @@ class Business(models.Model):
         return business
     
     @classmethod
-    def search_business(cls, search_term):
-        business = cls.objects.filter(name__icontains=search_term)
+    def search_business(cls, name):
+        business = cls.objects.filter(name__icontains=name).all()
         return business
 
     def __str__(self):
