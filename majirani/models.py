@@ -87,11 +87,11 @@ class Profile(models.Model):
         verbose_name_plural = 'Profiles'
 
 class Business(models.Model):
-    name = models.CharField(max_length=255)
-    email = models.EmailField(null=True, blank=True)
-    pub_date = models.DateTimeField(auto_now_add=True)
-    address = models.TextField()
-    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    email = models.EmailField(max_length=200)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='owner')
+    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, related_name='business')
 
     def save_business(self):
         self.save()
@@ -124,11 +124,11 @@ class Business(models.Model):
 
 
 class Posts(models.Model):
+    title = models.CharField(max_length=100, null=True)
     post = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)    
-    neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE)
-    Author = models.ForeignKey(User, on_delete=models.CASCADE)
-    author_profile = models.ForeignKey(Profile,on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='post_owner')
+    hood = models.ForeignKey(Neighborhood, on_delete=models.CASCADE, default='', related_name='hood_post')
 
     def __str__(self):
         return self.post
