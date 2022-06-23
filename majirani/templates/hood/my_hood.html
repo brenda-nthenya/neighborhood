@@ -1,0 +1,62 @@
+{% extends 'base.html' %} 
+{% load bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h2 class="pb-2 border-bottom">{{ hood.name }} Location:({{hood.location}})</h2>
+        <h4 class="text-centered">{{hood.description}}</h4>
+        <div class="card-body align">
+            <p class="card-text">
+                <span class="text-info">Police Tell</span> &nbsp;<strong
+                >{{hood.police_number}}</strong
+                >
+                | <span class="text-info">Hospital Tell</span>
+                <strong>{{hood.health_number}}</strong>
+            </p>
+            <p class="card-text">
+                Administrator:
+                <small class="text-muted">
+                {{ hood.admin.user.username }}</small
+                >
+            </p>
+    </div>
+
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <h2 class="pb-2 border-bottom">Businesses in the hood</h2>
+        {% for biz in business %}      
+        <div class="feature col">
+        <div class="feature-icon bg-primary bg-gradient">
+          <img src="{%static 'photos/business.png'%}">
+        </div>
+        <h2>{{biz.name}}</h2>
+        <h4>{{biz.email}</h4>
+        <p>{{biz.description}}</p>
+        <p>Owner:
+            <small class="text-muted">
+              {{ biz.user.user.username|title }}</small
+            ></p>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <h2 class="pb-2 border-bottom">Posts in Hood</h2>
+        <div class="col d-flex align-items-start">
+            {% for post in posts%}
+            <div class="feature col">
+                <div class="feature-icon bg-primary bg-gradient">
+                <img src="{%static 'photos/post.png'%}">
+                </div>
+                <h2>{{post.title}}</h2>
+                <p>{{post.post}}</p>
+                <p>Owner:
+                    <small class="text-muted">
+                    {{ post.user.user.username|title }}</small
+                    ></p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
