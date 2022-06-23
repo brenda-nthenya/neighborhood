@@ -117,12 +117,6 @@ class Business(models.Model):
         business = cls.objects.filter(neighborhood__name__icontains=neighborhoods)
         return business
 
-    class Meta:
-        ordering = ['-pub_date']
-        verbose_name = 'My Business'
-        verbose_name_plural = 'Business'
-
-
 class Posts(models.Model):
     title = models.CharField(max_length=100, null=True)
     post = models.TextField()
