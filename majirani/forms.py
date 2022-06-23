@@ -6,30 +6,35 @@ from django.contrib.auth.models import User
 
 
 class SignupForm(UserCreationForm):
-    first_name = forms.CharField(max_length=255)
-    last_name = forms.CharField(max_length=255)
     email=forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
   
     class Meta:
         model = User
-        fields=['username','first_name','last_name','email','password1','password2']
+        fields=['username','email','password1','password2']
 
 class NewBusinessForm(forms.ModelForm):
     class Meta:
         model = Business
-        exclude = ['Admin', 'pub_date', 'admin_profile']
+        fields = ['name','description','email']
 
 class NewNeighborhoodForm(forms.ModelForm):
     class Meta:
         model = Neighborhood
-        exclude = ['Admin', 'pub_date', 'admin_profile']
+        fields = ['name','description', 'location',
+         'police_number', 'health_number',
+          'occupants_count']
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        exclude = ['user']
-
+        fields = ['bio', 'profile_picture']
 class NewPostForm(forms.ModelForm):
     class Meta:
         model = Posts
-        exclude = ['Author', 'pub_date', 'author_profile', 'neighborhood']
+        fields = ['title','post','hood']
+
+class UserUpdateForm(forms.ModelForm):
+      email = forms.EmailField()
+      class Meta:
+        model = User
+        fields = ['username','email'] 
