@@ -8,9 +8,12 @@ from PIL import Image
 class Neighborhood(models.Model):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
+    police_number = models.IntegerField()
+    health_number = models.IntegerField()
+    description = models.TextField(max_length=250)
     occupants_count = models.IntegerField()
     pub_date = models.DateTimeField(auto_now_add=True)
-    Admin = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    admin = models.ForeignKey("Profile", on_delete=models.CASCADE, blank=True, related_name="hood")
 
     def __str__(self):
         return self.name
@@ -27,8 +30,8 @@ class Neighborhood(models.Model):
         return hood
     
     @classmethod
-    def search_hoods(cls, search_term):
-        hood = cls.objects.filter(name__icontains=search_term)
+    def search_hoods(cls, neighbourhood_id):
+        hood = cls.objects.filter(name__icontains=neighbourhood_id)
         return hood
     
     @classmethod
@@ -42,18 +45,21 @@ class Neighborhood(models.Model):
         verbose_name_plural = 'Neighborhoods'
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField(blank=True)
-    photo = models.ImageField(upload_to = 'profile_pics/', blank=True, default='profile_pics/default.jpg')
-    neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE, blank=True, default='1')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    name  = models.CharField(max_length=60)
+    profile_picture = models.ImageField(upload_to = 'profile_pics/', null=True)
+    bio = models.TextField(max_length=200, null=True, blank=True)
+    location = models.CharField(max_length=60, null=True, blank=True)
+    email = models.EmailField(max_length=200)
+    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
 
     @receiver(post_save,sender=User)
-    def create_profile(sender, instance,created,**kwargs):
+    def create_user_profile(sender, instance,created,**kwargs):
         if created:
             Profile.objects.create(user=instance)
 
     @receiver(post_save,sender=User)
-    def save_profile(sender, instance,**kwargs):
+    def save_user_profile(sender, instance,**kwargs):
         instance.profile.save()
 
     def save_profile(self):
@@ -68,6 +74,11 @@ class Profile(models.Model):
     def delete_profile(self):
         self.delete()
     
+    @classmethod
+    def search_profile(cls, name):
+        return cls.objects.filter(user__username__icontains=name).all()
+
+
     def __str__(self):
         return f"{self.user}, {self.bio}, {self.photo}"
     
@@ -79,10 +90,8 @@ class Business(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(null=True, blank=True)
     pub_date = models.DateTimeField(auto_now_add=True)
-    Admin = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
-    admin_profile = models.ForeignKey(Profile,on_delete=models.CASCADE, blank=True, default='1')
     address = models.TextField()
-    neighborhood = models.ForeignKey(Neighborhood,on_delete=models.CASCADE, blank=True, default='1')
+    neighbourhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
 
     def save_business(self):
         self.save()
