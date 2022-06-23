@@ -138,3 +138,7 @@ class Posts(models.Model):
         verbose_name = 'My Post'
         verbose_name_plural = 'Posts'
     
+
+class NewsLetterRecipients(models.Model):
+    name = models.CharField(max_length = 30)
+    email = models.EmailField()
