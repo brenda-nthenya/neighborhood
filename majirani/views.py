@@ -27,13 +27,6 @@ def register(request):
             profile=procForm.save(commit=False)
             profile.user=user
             profile.save() 
-
-            name = form.cleaned_data['your_name']
-            email = form.cleaned_data['email']
-
-            recipient = NewsLetterRecipients(name = name,email =email)
-            recipient.save()
-            send_welcome_email(name,email)
         return redirect('login')
     else:
         form= SignupForm()
