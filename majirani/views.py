@@ -18,30 +18,29 @@ def index(request):
     return render(request, 'index.html', locals())
 
 def register(request):
-    if request.method=="POST":
-        form=SignupForm(request.POST)
-        procForm=ProfileUpdateForm(request.POST, request.FILES)
-        if form.is_valid() and procForm.is_valid():
-            username=form.cleaned_data.get('username')
-            user=form.save()
-            profile=procForm.save(commit=False)
-            profile.user=user
-            profile.save() 
-        return redirect('login')
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('index')
     else:
-        form= SignupForm()
-        prof=ProfileUpdateForm()
+        form = SignupForm()
+
     context={
         'form':form,
-        'profForm': prof
     }
+
     return render(request, 'registration/registration.html', context)
+
 
 @login_required(login_url='login')
 def new_business(request):
-	'''
-	View function that enables users to add businesses
-	'''
+    
+
 	if request.method == 'POST':
 		form = NewBusinessForm(request.POST)
 		if form.is_valid():
